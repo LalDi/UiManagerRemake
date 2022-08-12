@@ -75,7 +75,8 @@ namespace BlitzyUI.UIExample
         private void DisplayPopup(string message)
         {
             var screenData = new Data();
-            screenData.Add("message", message);
+            screenData.Add(ExamplePopupScreen.dataKey, message);
+            screenData.Add(EExamplePopupData.msg.ToString(), message);
 
             UIManager.Instance.QueuePush(GameManager.ScreenId_ExamplePopup, screenData, EScreenKey.EXAMPLEPOPUP, null);
         }

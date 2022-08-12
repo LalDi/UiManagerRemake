@@ -7,10 +7,17 @@ using System.Collections.Generic;
 
 namespace BlitzyUI.UIExample
 {
+    public enum EExamplePopupData
+	{
+        msg,
+	}
+
     public class ExamplePopupScreen : Popup
     {
         public Text messageLabel;
         public Button okButton;
+
+        public static readonly string dataKey = "message";
 
         public override void OnHierFixed()
         {
@@ -20,7 +27,8 @@ namespace BlitzyUI.UIExample
 
         public override void OnSetData(Data data)
         {
-            messageLabel.text = data.Get<string>("message");
+            messageLabel.text = data.Get<string>(dataKey);
+            messageLabel.text = data.Get<string>(EExamplePopupData.msg.ToString());
 
             // Be sure to call PushFinished to signal the end of the push.
             //PushFinished();

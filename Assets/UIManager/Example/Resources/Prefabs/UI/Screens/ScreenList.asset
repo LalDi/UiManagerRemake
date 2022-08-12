@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: ScreenList
   m_EditorClassIdentifier: 
   screenList:
-  - key: 0
-    prefab: {fileID: 114060369503643750, guid: 365b5e8d6e00949b7a2a17cc9a3e6fca, type: 3}
   - key: 1
     prefab: {fileID: 114102610489145022, guid: 9c435cd248576467c8598a6659f4b488, type: 3}
   - key: 2
     prefab: {fileID: 114646629644918178, guid: 2a6f840d0a5964ef38728af675305743, type: 3}
+  - key: 0
+    prefab: {fileID: 114060369503643750, guid: 365b5e8d6e00949b7a2a17cc9a3e6fca, type: 3}
