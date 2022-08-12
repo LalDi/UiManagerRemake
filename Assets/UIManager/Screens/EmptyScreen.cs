@@ -14,7 +14,7 @@ namespace BlitzyUI
             // Run one-time setup operations here.
         }
 
-        public override void OnSetData(IScreen.Data data)
+        public override void OnSetData(Data data)
         {
             // Be sure to call PushFinished to signal the end of the push.
             //PushFinished();

@@ -24,7 +24,7 @@ namespace BlitzyUI.UIExample
             buttonD.onClick.AddListener(HandleButtonDClicked);
         }
 
-        public override void OnSetData(IScreen.Data data)
+        public override void OnSetData(Data data)
         {
             headerLabel.text = "Click on a button...";
 
@@ -74,7 +74,7 @@ namespace BlitzyUI.UIExample
 
         private void DisplayPopup(string message)
         {
-            var screenData = new IScreen.Data();
+            var screenData = new Data();
             screenData.Add("message", message);
 
             UIManager.Instance.QueuePush(GameManager.ScreenId_ExamplePopup, screenData, EScreenKey.EXAMPLEPOPUP, null);

@@ -16,13 +16,13 @@ namespace BlitzyUI
 
         private abstract class QueuedScreen
         {
-            public IScreen.Id id;
+            public Screen.Id id;
         }
 
 
         private class QueuedScreenPush : QueuedScreen
         {
-            public IScreen.Data data;
+            public Screen.Data data;
             public EScreenKey key;
             public PushedDelegate callback;
 
@@ -43,8 +43,8 @@ namespace BlitzyUI
             }
         }
 
-        public delegate void PushedDelegate (IScreen screen);
-        public delegate void PoppedDelegate (IScreen.Id id);
+        public delegate void PushedDelegate (Screen screen);
+        public delegate void PoppedDelegate (Screen.Id id);
 
         public static UIManager Instance { get; private set; }
 
@@ -63,7 +63,7 @@ namespace BlitzyUI
         private Dictionary<EScreenKey, Screen> _cache;
         private Queue<QueuedScreen> _queue;
         private Stack<Screen> _stack;
-        private HashSet<IScreen.Id> _stackIdSet;
+        private HashSet<Screen.Id> _stackIdSet;
         private State _state;
 
         private PushedDelegate _activePushCallback;
@@ -121,7 +121,7 @@ namespace BlitzyUI
         /// Queue the screen to be pushed onto the screen stack. 
         /// Callback will be invoked when the screen is pushed to the stack.
         /// </summary>
-        public void QueuePush (IScreen.Id id, IScreen.Data data, EScreenKey key, PushedDelegate callback = null)
+        public void QueuePush (Screen.Id id, Screen.Data data, EScreenKey key, PushedDelegate callback = null)
         {
             #if PRINT_QUEUE
             DebugPrintQueue(string.Format("[UIManager] QueuePush id: {0}, prefabKey: {1}", id, key.ToString()));
@@ -159,7 +159,7 @@ namespace BlitzyUI
         /// Queue the screen to be popped from the screen stack. This will pop all screens on top of it as well.
         /// Callback will be invoked when the screen is reached, or popped if 'include' is true.
         /// </summary>
-        public void QueuePopTo (IScreen.Id id, bool include, PoppedDelegate callback = null)
+        public void QueuePopTo (Screen.Id id, bool include, PoppedDelegate callback = null)
         {
             #if PRINT_QUEUE
             DebugPrintQueue(string.Format("[UIManager] QueuePopTo id: {0}, include: {1}", id, include));
@@ -255,7 +255,7 @@ namespace BlitzyUI
             return null;
         }
 
-        public Screen GetScreen (IScreen.Id id)
+        public Screen GetScreen (Screen.Id id)
         {
             //int count = _stack.Count;
             //for (int i = 0; i < count; i++)
@@ -274,7 +274,7 @@ namespace BlitzyUI
             return null;
         }
 
-        public T GetScreen<T> (IScreen.Id id) where T : Screen
+        public T GetScreen<T> (Screen.Id id) where T : Screen
         {
             Screen screen = GetScreen(id);
             return (T)screen;
@@ -553,7 +553,7 @@ namespace BlitzyUI
             Debug.Log(sb.ToString());
         }
 
-        private void HandlePushFinished (IScreen screen)
+        private void HandlePushFinished (Screen screen)
         {
             screen.onPushFinished -= HandlePushFinished;
 
@@ -569,25 +569,19 @@ namespace BlitzyUI
                 ExecuteNextQueueItem();
         }
 
-        private void HandlePopFinished (IScreen screen)
+        private void HandlePopFinished (Screen screen)
         {
             screen.onPopFinished -= HandlePopFinished;
 
-            Screen obj;
-            if (screen is Screen)
-                obj = (Screen)screen;
-            else
-                return;
-
-            if (obj.keepCached)
+            if (screen.keepCached)
             {
                 // Store in the cache for later use.
-                obj.gameObject.SetActive(false);
+                screen.gameObject.SetActive(false);
 
                 // TODO: Need to have a better cache storage mechanism that supports multiple screens of the same prefab?
-                if (!_cache.ContainsKey(obj.key))
+                if (!_cache.ContainsKey(screen.key))
                 {
-                    _cache.Add(obj.key, obj);
+                    _cache.Add(screen.key, screen);
 
                     #if PRINT_CACHE
                     DebugPrintCache(string.Format("[UIManager] Screen added to Cache: {0}", screen.PrefabName));
@@ -597,14 +591,14 @@ namespace BlitzyUI
             else
             {
                 // Destroy screen.
-                Object.Destroy(obj.gameObject);
+                Object.Destroy(screen.gameObject);
             }
 
             _state = State.Ready;
 
             if (_activePopCallback != null)
             {
-                _activePopCallback(obj.id);
+                _activePopCallback(screen.id);
                 _activePopCallback = null;
             }
 

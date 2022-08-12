@@ -7,9 +7,9 @@ namespace BlitzyUI.UIExample
         public static GameManager Instance { get; private set; }
 
         // Screen Ids
-        public static readonly IScreen.Id ScreenId_Empty = new IScreen.Id("Empty");
-        public static readonly IScreen.Id ScreenId_ExampleMenu = new IScreen.Id("ExampleMenu");
-        public static readonly IScreen.Id ScreenId_ExamplePopup = new IScreen.Id("ExamplePopup");
+        public static readonly Screen.Id ScreenId_Empty = new Screen.Id("Empty");
+        public static readonly Screen.Id ScreenId_ExampleMenu = new Screen.Id("ExampleMenu");
+        public static readonly Screen.Id ScreenId_ExamplePopup = new Screen.Id("ExamplePopup");
 
         private void Awake() {
             if (Instance == null) {

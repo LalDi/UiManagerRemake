@@ -18,7 +18,7 @@ namespace BlitzyUI.UIExample
             okButton.onClick.AddListener(HandleOkClicked);
         }
 
-        public override void OnSetData(IScreen.Data data)
+        public override void OnSetData(Data data)
         {
             messageLabel.text = data.Get<string>("message");
 
