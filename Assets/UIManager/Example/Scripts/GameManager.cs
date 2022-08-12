@@ -25,7 +25,7 @@ namespace BlitzyUI.UIExample
 
         private void Start() {
             // Push the example menu screen immediately.
-            UIManager.Instance.QueuePush(ScreenId_ExampleMenu, null, SCREENKEY.EXAMPLEMENU, null);
+            UIManager.Instance.QueuePush(ScreenId_ExampleMenu, null, EScreenKey.EXAMPLEMENU, null);
         }
     }
 }

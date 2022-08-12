@@ -23,7 +23,7 @@ namespace BlitzyUI
         private class QueuedScreenPush : QueuedScreen
         {
             public IScreen.Data data;
-            public SCREENKEY key;
+            public EScreenKey key;
             public PushedDelegate callback;
 
             public override string ToString()
@@ -48,8 +48,8 @@ namespace BlitzyUI
 
         public static UIManager Instance { get; private set; }
 
-        public List<UIScreenData> listScreenKey;
-        private Dictionary<SCREENKEY, Screen> _dicScreenPrefab;
+        public List<ScreenKeyData> listScreenKey;
+        private Dictionary<EScreenKey, Screen> _dicScreenPrefab;
         public Canvas rootCanvas;
         public Camera uiCamera;
 
@@ -60,7 +60,7 @@ namespace BlitzyUI
         public bool inputOrderFixEnabled = true;
 
         private CanvasScaler _rootCanvasScalar;
-        private Dictionary<SCREENKEY, Screen> _cache;
+        private Dictionary<EScreenKey, Screen> _cache;
         private Queue<QueuedScreen> _queue;
         private Stack<Screen> _stack;
         private HashSet<IScreen.Id> _stackIdSet;
@@ -90,8 +90,8 @@ namespace BlitzyUI
                 throw new System.Exception(string.Format("{0} must have a CanvasScalar component attached to it for UIManager.", rootCanvas.name));
             }
 
-            _dicScreenPrefab = new Dictionary<SCREENKEY, Screen>();
-            _cache = new Dictionary<SCREENKEY, Screen>();
+            _dicScreenPrefab = new Dictionary<EScreenKey, Screen>();
+            _cache = new Dictionary<EScreenKey, Screen>();
             _queue = new Queue<QueuedScreen>();
             _stack = new Stack<Screen>();
             _state = State.Ready;
@@ -121,7 +121,7 @@ namespace BlitzyUI
         /// Queue the screen to be pushed onto the screen stack. 
         /// Callback will be invoked when the screen is pushed to the stack.
         /// </summary>
-        public void QueuePush (IScreen.Id id, IScreen.Data data, SCREENKEY key, PushedDelegate callback = null)
+        public void QueuePush (IScreen.Id id, IScreen.Data data, EScreenKey key, PushedDelegate callback = null)
         {
             #if PRINT_QUEUE
             DebugPrintQueue(string.Format("[UIManager] QueuePush id: {0}, prefabKey: {1}", id, key.ToString()));
@@ -545,7 +545,7 @@ namespace BlitzyUI
 
             sb.AppendLine("[UIManager Screen Cache]");
 
-            foreach (KeyValuePair<SCREENKEY, Screen> cached in _cache)
+            foreach (KeyValuePair<EScreenKey, Screen> cached in _cache)
             {
                 sb.AppendLine(cached.Key.ToString());
             }

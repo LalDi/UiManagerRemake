@@ -126,7 +126,7 @@ public interface IScreen
     public event ScreenDelegate onPushFinished;
     public event ScreenDelegate onPopFinished;
 
-    public abstract void Setup(IScreen.Id id, SCREENKEY key);
+    public abstract void Setup(IScreen.Id id, EScreenKey key);
 
     public abstract void OnSetData(IScreen.Data data);
 

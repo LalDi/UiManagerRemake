@@ -132,7 +132,7 @@ namespace BlitzyUI
 
 
         public Id id { get; private set; }
-        public SCREENKEY key { get; private set; }
+        public EScreenKey key { get; private set; }
 
         public bool keepCached = false;
         public bool overrideManagedSorting;
@@ -143,7 +143,7 @@ namespace BlitzyUI
         public event ScreenDelegate onPushFinished;
         public event ScreenDelegate onPopFinished;
 
-        public void Setup(Id id, SCREENKEY key)
+        public void Setup(Id id, EScreenKey key)
         {
             this.id = id;
             this.key = key;

@@ -77,7 +77,7 @@ namespace BlitzyUI.UIExample
             var screenData = new IScreen.Data();
             screenData.Add("message", message);
 
-            UIManager.Instance.QueuePush(GameManager.ScreenId_ExamplePopup, screenData, SCREENKEY.EXAMPLEPOPUP, null);
+            UIManager.Instance.QueuePush(GameManager.ScreenId_ExamplePopup, screenData, EScreenKey.EXAMPLEPOPUP, null);
         }
 
 		public override void OnShowing()

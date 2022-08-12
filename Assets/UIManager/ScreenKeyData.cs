@@ -3,20 +3,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum SCREENKEY
+public enum EScreenKey
 {
 	EMPTY,
 	EXAMPLEMENU,
 	EXAMPLEPOPUP,
 }
 
-class ScreenKeyComparer : IEqualityComparer<SCREENKEY>
+class ScreenKeyComparer : IEqualityComparer<EScreenKey>
 {
-    public bool Equals(SCREENKEY x, SCREENKEY y)
+    public bool Equals(EScreenKey x, EScreenKey y)
     {
         return x == y;
     }
-    public int GetHashCode(SCREENKEY obj)
+    public int GetHashCode(EScreenKey obj)
     {
         return (int)obj;
     }
@@ -25,12 +25,12 @@ class ScreenKeyComparer : IEqualityComparer<SCREENKEY>
 [Serializable]
 public class ScreenData
 {
-	public SCREENKEY key;
+	public EScreenKey key;
 	public Screen prefab;
 }
 
 [CreateAssetMenu(menuName = "Data/ScreenData")]
-public class UIScreenData : ScriptableObject
+public class ScreenKeyData : ScriptableObject
 {
 	public List<ScreenData> screenList;
 }

@@ -6,7 +6,7 @@ using UnityEngine;
 public abstract class Screen : MonoBehaviour, IScreen
 {
     public IScreen.Id id { get; private set; }
-    public SCREENKEY key { get; private set; }
+    public EScreenKey key { get; private set; }
 
     public bool keepCached = false;
     public bool overrideManagedSorting;
@@ -15,7 +15,7 @@ public abstract class Screen : MonoBehaviour, IScreen
 	public event IScreen.ScreenDelegate onPushFinished;
 	public event IScreen.ScreenDelegate onPopFinished;
 
-	public void Setup(IScreen.Id id, SCREENKEY key)
+	public void Setup(IScreen.Id id, EScreenKey key)
 	{
 		this.id = id;
 		this.key = key;
