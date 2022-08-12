@@ -16,13 +16,13 @@ namespace BlitzyUI
 
         private abstract class QueuedScreen
         {
-            public BlitzyUI.ScreenOld.Id id;
+            public IScreen.Id id;
         }
 
 
         private class QueuedScreenPush : QueuedScreen
         {
-            public BlitzyUI.ScreenOld.Data data;
+            public IScreen.Data data;
             public SCREENKEY key;
             public PushedDelegate callback;
 
@@ -43,13 +43,13 @@ namespace BlitzyUI
             }
         }
 
-        public delegate void PushedDelegate (ScreenOld screen);
-        public delegate void PoppedDelegate (ScreenOld.Id id);
+        public delegate void PushedDelegate (IScreen screen);
+        public delegate void PoppedDelegate (IScreen.Id id);
 
         public static UIManager Instance { get; private set; }
 
         public List<UIScreenData> listScreenKey;
-        private Dictionary<SCREENKEY, ScreenOld> _dicScreenPrefab;
+        private Dictionary<SCREENKEY, Screen> _dicScreenPrefab;
         public Canvas rootCanvas;
         public Camera uiCamera;
 
@@ -60,10 +60,10 @@ namespace BlitzyUI
         public bool inputOrderFixEnabled = true;
 
         private CanvasScaler _rootCanvasScalar;
-        private Dictionary<SCREENKEY, ScreenOld> _cache;
+        private Dictionary<SCREENKEY, Screen> _cache;
         private Queue<QueuedScreen> _queue;
-        private List<ScreenOld> _stack;
-        private HashSet<BlitzyUI.ScreenOld.Id> _stackIdSet;
+        private List<Screen> _stack;
+        private HashSet<IScreen.Id> _stackIdSet;
         private State _state;
 
         private PushedDelegate _activePushCallback;
@@ -90,10 +90,10 @@ namespace BlitzyUI
                 throw new System.Exception(string.Format("{0} must have a CanvasScalar component attached to it for UIManager.", rootCanvas.name));
             }
 
-            _dicScreenPrefab = new Dictionary<SCREENKEY, ScreenOld>();
-            _cache = new Dictionary<SCREENKEY, ScreenOld>();
+            _dicScreenPrefab = new Dictionary<SCREENKEY, Screen>();
+            _cache = new Dictionary<SCREENKEY, Screen>();
             _queue = new Queue<QueuedScreen>();
-            _stack = new List<ScreenOld>();
+            _stack = new List<Screen>();
             _state = State.Ready;
 
 			foreach (var data in listScreenKey)
@@ -121,7 +121,7 @@ namespace BlitzyUI
         /// Queue the screen to be pushed onto the screen stack. 
         /// Callback will be invoked when the screen is pushed to the stack.
         /// </summary>
-        public void QueuePush (BlitzyUI.ScreenOld.Id id, BlitzyUI.ScreenOld.Data data, SCREENKEY key, PushedDelegate callback = null)
+        public void QueuePush (IScreen.Id id, IScreen.Data data, SCREENKEY key, PushedDelegate callback = null)
         {
             #if PRINT_QUEUE
             DebugPrintQueue(string.Format("[UIManager] QueuePush id: {0}, prefabKey: {1}", id, key.ToString()));
@@ -159,7 +159,7 @@ namespace BlitzyUI
         /// Queue the screen to be popped from the screen stack. This will pop all screens on top of it as well.
         /// Callback will be invoked when the screen is reached, or popped if 'include' is true.
         /// </summary>
-        public void QueuePopTo (BlitzyUI.ScreenOld.Id id, bool include, PoppedDelegate callback = null)
+        public void QueuePopTo (IScreen.Id id, bool include, PoppedDelegate callback = null)
         {
             #if PRINT_QUEUE
             DebugPrintQueue(string.Format("[UIManager] QueuePopTo id: {0}, include: {1}", id, include));
@@ -222,7 +222,7 @@ namespace BlitzyUI
             DebugPrintQueue(string.Format("[UIManager] QueuePop"));
             #endif
 
-            ScreenOld topScreen = GetTopScreen();
+            Screen topScreen = GetTopScreen();
             if (topScreen == null)
                 return;
 
@@ -246,7 +246,7 @@ namespace BlitzyUI
                 ExecuteNextQueueItem();
         }
 
-        public ScreenOld GetTopScreen ()
+        public Screen GetTopScreen ()
         {
             if (_stack.Count > 0)
                 return _stack[0];
@@ -254,7 +254,7 @@ namespace BlitzyUI
             return null;
         }
 
-        public ScreenOld GetScreen (BlitzyUI.ScreenOld.Id id)
+        public Screen GetScreen (IScreen.Id id)
         {
             int count = _stack.Count;
             for (int i = 0; i < count; i++)
@@ -266,9 +266,9 @@ namespace BlitzyUI
             return null;
         }
 
-        public T GetScreen<T> (BlitzyUI.ScreenOld.Id id) where T : BlitzyUI.ScreenOld
+        public T GetScreen<T> (IScreen.Id id) where T : Screen
         {
-            ScreenOld screen = GetScreen(id);
+            Screen screen = GetScreen(id);
             return (T)screen;
         }
 
@@ -324,7 +324,7 @@ namespace BlitzyUI
             {
                 // Push screen.
                 QueuedScreenPush queuedPush = (QueuedScreenPush)queued;
-                ScreenOld screenInstance;
+                Screen screenInstance;
 
                 if (_cache.TryGetValue(queuedPush.key, out screenInstance))
                 {
@@ -345,10 +345,11 @@ namespace BlitzyUI
                     // Instantiate new instance of screen.
                     //string path = System.IO.Path.Combine(resourcePrefabDirectory, queuedPush.prefabName);
                     //Screen prefab = Resources.Load<Screen>(path);
-                    ScreenOld prefab = _dicScreenPrefab[queuedPush.key];
+                    Screen prefab = _dicScreenPrefab[queuedPush.key];
 
                     screenInstance = Object.Instantiate(prefab, rootCanvas.transform);
                     screenInstance.Setup(queuedPush.id, queuedPush.key);
+                    screenInstance.OnHierFixed();
                 }
 
                 if (this.inputOrderFixEnabled) {
@@ -363,7 +364,11 @@ namespace BlitzyUI
                     Debug.Log(string.Format("[UIManager] Lost Focus: {0}", topScreen.id));
                     #endif
 
-                    topScreen.OnFocusLost();
+                    if (topScreen is Window)
+                    {
+                        var topWindow = (Window)topScreen;
+                        topWindow.OnFocusLost();
+                    }
                 }
 
                 // Insert new screen at the top of the stack.
@@ -376,24 +381,29 @@ namespace BlitzyUI
                 DebugPrintStack(string.Format("[UIManager] Pushing Screen: {0}, Frame: {1}", queued.id, Time.frameCount));
                 #endif
 
+                screenInstance.OnSetData(queuedPush.data);
+
+                screenInstance.OnShowing();
+                screenInstance.InAnimEnd();
+
                 screenInstance.onPushFinished += HandlePushFinished;
-                screenInstance.OnPush(queuedPush.data);
+                screenInstance.PushFinished();
 
-                if (_queue.Count == 0)
-                {
-                    #if PRINT_FOCUS
-                    Debug.Log(string.Format("[UIManager] Gained Focus: {0}", screenInstance.id));
-                    #endif
-
-                    // Screen gains focus when it is on top of the screen stack and no other items in the queue.
-                    screenInstance.OnFocus();
-                }
+                //if (_queue.Count == 0)
+                //{
+                //    #if PRINT_FOCUS
+                //    Debug.Log(string.Format("[UIManager] Gained Focus: {0}", screenInstance.id));
+                //    #endif
+                //
+                //    // Screen gains focus when it is on top of the screen stack and no other items in the queue.
+                //    screenInstance.OnFocus();
+                //}
             }
             else
             {
                 // Pop screen.
                 QueuedScreenPop queuedPop = (QueuedScreenPop)queued;
-                ScreenOld screenToPop = GetTopScreen();
+                Screen screenToPop = GetTopScreen();
 
                 if (screenToPop.id != queued.id)
                 {
@@ -405,7 +415,12 @@ namespace BlitzyUI
                 Debug.Log(string.Format("[UIManager] Lost Focus: {0}", screenToPop.id));
                 #endif
 
-                screenToPop.OnFocusLost();
+                //screenToPop.OnFocusLost();
+                //if (screenToPop is Window)
+                //{
+                //    var topPopup = (Window)screenToPop;
+                //    topPopup.OnFocusLost();
+                //}
 
                 _state = State.Pop;
                 _stack.RemoveAt(0);
@@ -421,7 +436,11 @@ namespace BlitzyUI
                         #endif
 
                         // Screen gains focus when it is on top of the screen stack and no other items in the queue.
-                        newTopScreen.OnFocus();
+                        if (newTopScreen is Window)
+                        {
+                            var topWindow = (Window)newTopScreen;
+                            topWindow.OnReFocus();
+                        }
                     }
                 }
 
@@ -431,8 +450,12 @@ namespace BlitzyUI
                 DebugPrintStack(string.Format("[UIManager] Popping Screen: {0}, Frame: {1}", queued.id, Time.frameCount));
                 #endif
 
+                //screenToPop.OnPop();
+                screenToPop.OnHiding();
+                screenToPop.OutAnimEnd();
+
                 screenToPop.onPopFinished += HandlePopFinished;
-                screenToPop.OnPop();
+                screenToPop.PopFinished();
             }
         }
 
@@ -441,7 +464,7 @@ namespace BlitzyUI
             
             int childCount = this.rootCanvas.transform.childCount;
             for (int i = 0; i < childCount; i++) {
-                var screen = this.rootCanvas.transform.GetChild(i).GetComponent<ScreenOld>();
+                var screen = this.rootCanvas.transform.GetChild(i).GetComponent<Screen>();
                 if (screen != null) {
                     var canvas = screen.GetComponent<Canvas>();
                     if (canvas != null) {
@@ -511,7 +534,7 @@ namespace BlitzyUI
 
             sb.AppendLine("[UIManager Screen Cache]");
 
-            foreach (KeyValuePair<SCREENKEY, ScreenOld> cached in _cache)
+            foreach (KeyValuePair<SCREENKEY, Screen> cached in _cache)
             {
                 sb.AppendLine(cached.Key.ToString());
             }
@@ -519,7 +542,7 @@ namespace BlitzyUI
             Debug.Log(sb.ToString());
         }
 
-        private void HandlePushFinished (ScreenOld screen)
+        private void HandlePushFinished (IScreen screen)
         {
             screen.onPushFinished -= HandlePushFinished;
 
@@ -535,19 +558,25 @@ namespace BlitzyUI
                 ExecuteNextQueueItem();
         }
 
-        private void HandlePopFinished (ScreenOld screen)
+        private void HandlePopFinished (IScreen screen)
         {
             screen.onPopFinished -= HandlePopFinished;
 
-            if (screen.keepCached)
+            Screen obj;
+            if (screen is Screen)
+                obj = (Screen)screen;
+            else
+                return;
+
+            if (obj.keepCached)
             {
                 // Store in the cache for later use.
-                screen.gameObject.SetActive(false);
+                obj.gameObject.SetActive(false);
 
                 // TODO: Need to have a better cache storage mechanism that supports multiple screens of the same prefab?
-                if (!_cache.ContainsKey(screen.key))
+                if (!_cache.ContainsKey(obj.key))
                 {
-                    _cache.Add(screen.key, screen);
+                    _cache.Add(obj.key, obj);
 
                     #if PRINT_CACHE
                     DebugPrintCache(string.Format("[UIManager] Screen added to Cache: {0}", screen.PrefabName));
@@ -557,14 +586,14 @@ namespace BlitzyUI
             else
             {
                 // Destroy screen.
-                Object.Destroy(screen.gameObject);
+                Object.Destroy(obj.gameObject);
             }
 
             _state = State.Ready;
 
             if (_activePopCallback != null)
             {
-                _activePopCallback(screen.id);
+                _activePopCallback(obj.id);
                 _activePopCallback = null;
             }
 

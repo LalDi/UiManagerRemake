@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using ScreenOld = BlitzyUI.ScreenOld;
 
 public enum SCREENKEY
 {
@@ -27,7 +26,7 @@ class ScreenKeyComparer : IEqualityComparer<SCREENKEY>
 public class ScreenData
 {
 	public SCREENKEY key;
-	public ScreenOld prefab;
+	public Screen prefab;
 }
 
 [CreateAssetMenu(menuName = "Data/ScreenData")]

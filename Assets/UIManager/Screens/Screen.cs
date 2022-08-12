@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Canvas))]
-public abstract class Screen : IScreen
+public abstract class Screen : MonoBehaviour, IScreen
 {
-    public Id id { get; private set; }
+    public IScreen.Id id { get; private set; }
     public SCREENKEY key { get; private set; }
 
     public bool keepCached = false;
@@ -15,16 +15,18 @@ public abstract class Screen : IScreen
 	public event IScreen.ScreenDelegate onPushFinished;
 	public event IScreen.ScreenDelegate onPopFinished;
 
-	public abstract void Setup(Id id, SCREENKEY key);
-	public abstract void OnSetup(Data data);
+	public void Setup(IScreen.Id id, SCREENKEY key)
+	{
+		this.id = id;
+		this.key = key;
+	}
+
+	public abstract void OnSetData(IScreen.Data data);
 	public abstract void OnHierFixed();
+	public abstract void OnShowing();
 	public abstract void InAnimEnd();
 	public abstract void OnHiding();
 	public abstract void OutAnimEnd();
-
-	public abstract void OnPush();
-	public abstract void OnPop();
-	public abstract void OnFocus();
 
 
 	public void PushFinished()
@@ -36,5 +38,4 @@ public abstract class Screen : IScreen
 	{
 		onPopFinished?.Invoke(this);
 	}
-
 }

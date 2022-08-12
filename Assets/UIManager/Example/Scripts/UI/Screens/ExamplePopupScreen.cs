@@ -7,44 +7,51 @@ using System.Collections.Generic;
 
 namespace BlitzyUI.UIExample
 {
-    public class ExamplePopupScreen : BlitzyUI.ScreenOld
+    public class ExamplePopupScreen : Popup
     {
         public Text messageLabel;
         public Button okButton;
 
-        public override void OnSetup()
+        public override void OnHierFixed()
         {
             // Run one-time setup operations here.
             okButton.onClick.AddListener(HandleOkClicked);
         }
 
-        public override void OnPush(Data data)
+        public override void OnSetData(IScreen.Data data)
         {
             messageLabel.text = data.Get<string>("message");
 
             // Be sure to call PushFinished to signal the end of the push.
-            PushFinished();
+            //PushFinished();
         }
 
-        public override void OnPop()
+        public override void OnHiding()
         {
             // Be sure to call PopFinished to signal the end of the pop.
-            PopFinished();
+            //PopFinished();
         }
 
-        public override void OnFocus()
-        {
-        }
-
-        public override void OnFocusLost()
-        {
-        }
-
-        private void HandleOkClicked ()
+        private void HandleOkClicked()
         {
             UIManager.Instance.QueuePop(null);
         }
-    }
+
+		public override void OnShowing()
+		{
+			return;
+		}
+
+		public override void InAnimEnd()
+		{
+			return;
+		}
+
+		public override void OutAnimEnd()
+		{
+			return;
+		}
+	}
 }
 
 #pragma warning restore 0649
