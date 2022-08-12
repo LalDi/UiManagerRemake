@@ -62,7 +62,7 @@ namespace BlitzyUI
         private CanvasScaler _rootCanvasScalar;
         private Dictionary<SCREENKEY, Screen> _cache;
         private Queue<QueuedScreen> _queue;
-        private List<Screen> _stack;
+        private Stack<Screen> _stack;
         private HashSet<IScreen.Id> _stackIdSet;
         private State _state;
 
@@ -93,7 +93,7 @@ namespace BlitzyUI
             _dicScreenPrefab = new Dictionary<SCREENKEY, Screen>();
             _cache = new Dictionary<SCREENKEY, Screen>();
             _queue = new Queue<QueuedScreen>();
-            _stack = new List<Screen>();
+            _stack = new Stack<Screen>();
             _state = State.Ready;
 
 			foreach (var data in listScreenKey)
@@ -167,9 +167,10 @@ namespace BlitzyUI
 
             bool found = false;
 
-            for (int i = 0; i < _stack.Count; i++)
+            //for (int i = 0; i < _stack.Count; i++)
+            foreach (var screen in _stack)
             {
-                var screen = _stack[i];
+                //var screen = _stack[i];
 
                 if (screen.id != id)
                 {
@@ -249,19 +250,26 @@ namespace BlitzyUI
         public Screen GetTopScreen ()
         {
             if (_stack.Count > 0)
-                return _stack[0];
+                return _stack.Peek();
 
             return null;
         }
 
         public Screen GetScreen (IScreen.Id id)
         {
-            int count = _stack.Count;
-            for (int i = 0; i < count; i++)
-            {
-                if (_stack[i].id == id)
-                    return _stack[i];
-            }
+            //int count = _stack.Count;
+            //for (int i = 0; i < count; i++)
+            //{
+            //    if (_stack[i].id == id)
+            //        return _stack[i];
+            //}
+
+			foreach (var item in _stack)
+			{
+                if (item.id == id)
+                    return item;
+			}
+
 
             return null;
         }
@@ -373,7 +381,8 @@ namespace BlitzyUI
 
                 // Insert new screen at the top of the stack.
                 _state = State.Push;
-                _stack.Insert(0, screenInstance);
+                _stack.Push(screenInstance);
+                //_stack.Insert(0, screenInstance);
 
                 _activePushCallback = queuedPush.callback;
 
@@ -403,7 +412,7 @@ namespace BlitzyUI
             {
                 // Pop screen.
                 QueuedScreenPop queuedPop = (QueuedScreenPop)queued;
-                Screen screenToPop = GetTopScreen();
+                Screen screenToPop = _stack.Pop(); //GetTopScreen();
 
                 if (screenToPop.id != queued.id)
                 {
@@ -423,7 +432,7 @@ namespace BlitzyUI
                 //}
 
                 _state = State.Pop;
-                _stack.RemoveAt(0);
+                //_stack.RemoveAt(0);
 
                 // Tell new top screen that it is gaining focus.
                 var newTopScreen = GetTopScreen();
@@ -500,9 +509,11 @@ namespace BlitzyUI
 
             sb.AppendLine("[UIManager Screen Stack]");
 
-            for (int i = 0; i < _stack.Count; i++)
+            //for (int i = 0; i < _stack.Count; i++)
+            foreach (var screen in _stack)
             {
-                sb.AppendLine(string.Format("{0}", _stack[i].id));
+                //sb.AppendLine(string.Format("{0}", _stack[i].id));
+                sb.AppendLine(string.Format("{0}", screen.id));
             }
 
             Debug.Log(sb.ToString());
