@@ -416,13 +416,14 @@ namespace BlitzyUI
             {
                 // Pop screen.
                 QueuedScreenPop queuedPop = (QueuedScreenPop)queued;
-                Screen screenToPop = _stack.Pop(); //GetTopScreen();
 
-                if (screenToPop.id != queued.id)
+                if (_stack.Peek().id != queued.id)
                 {
                     throw new System.Exception(string.Format("The top screen does not match the queued pop. " +
-                                                             "TopScreen: {0}, QueuedPop: {1}", screenToPop.id, queued.id));
+                                                             "TopScreen: {0}, QueuedPop: {1}", _stack.Peek().id, queued.id));
                 }
+
+                Screen screenToPop = _stack.Pop(); //GetTopScreen();
 
                 #if PRINT_FOCUS
                 Debug.Log(string.Format("[UIManager] Lost Focus: {0}", screenToPop.id));
