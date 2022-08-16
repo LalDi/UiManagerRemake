@@ -12,41 +12,49 @@ namespace BlitzyUI
         public override void OnHierFixed()
         {
             // Run one-time setup operations here.
+            Debug.Log($"[{key}] Play OnHierFixed");
         }
 
         public override void OnSetData(Data data)
         {
             // Be sure to call PushFinished to signal the end of the push.
             //PushFinished();
+            Debug.Log($"[{key}] Play OnSetData");
         }
 
         public override void OnHiding()
         {
             // Be sure to call PopFinished to signal the end of the pop.
             //PopFinished();
+            Debug.Log($"[{key}] Play OnHiding");
         }
 
         public override void OnReFocus()
         {
+            Debug.Log($"[{key}] Play OnReFocus");
         }
 
         public override void OnFocusLost()
         {
+            Debug.Log($"[{key}] Play OnFocusLost");
         }
 
 		public override void OnShowing()
-		{
-			return;
+        {
+            Debug.Log($"[{key}] Play OnShowing");
+            return;
 		}
 
 		public override void InAnimEnd()
-		{
-			return;
+        {
+            Debug.Log($"[{key}] Play InAnimEnd");
+            return;
 		}
 
 		public override void OutAnimEnd()
-		{
-			return;
+        {
+            Debug.Log($"[{key}] Play OutAnimEnd");
+            return;
 		}
 	}
 }

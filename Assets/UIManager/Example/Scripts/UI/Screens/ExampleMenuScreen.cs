@@ -22,6 +22,8 @@ namespace BlitzyUI.UIExample
             buttonB.onClick.AddListener(HandleButtonBClicked);
             buttonC.onClick.AddListener(HandleButtonCClicked);
             buttonD.onClick.AddListener(HandleButtonDClicked);
+
+            Debug.Log($"[{key}] Play OnHierFixed");
         }
 
         public override void OnSetData(Data data)
@@ -30,22 +32,30 @@ namespace BlitzyUI.UIExample
 
             // Be sure to call PushFinished to signal the end of the push.
             PushFinished();
+
+            Debug.Log($"[{key}] Play OnSetData");
         }
 
         public override void OnHiding()
         {
             // Be sure to call PopFinished to signal the end of the pop.
             //PopFinished();
+
+            Debug.Log($"[{key}] Play OnHiding");
         }
 
         public override void OnReFocus()
         {
             headerLabel.gameObject.SetActive(true);
+
+            Debug.Log($"[{key}] Play OnReFocus");
         }
 
         public override void OnFocusLost()
         {
             headerLabel.gameObject.SetActive(false);
+
+            Debug.Log($"[{key}] Play OnFocusLost");
         }
 
         private void HandleButtonAClicked()
@@ -82,18 +92,21 @@ namespace BlitzyUI.UIExample
         }
 
 		public override void OnShowing()
-		{
-			return;
+        {
+            Debug.Log($"[{key}] Play OnShowing");
+            return;
 		}
 
 		public override void InAnimEnd()
-		{
-			return;
+        {
+            Debug.Log($"[{key}] Play InAnimEnd");
+            return;
 		}
 
 		public override void OutAnimEnd()
-		{
-			return;
+        {
+            Debug.Log($"[{key}] Play OutAnimEnd");
+            return;
 		}
 	}
 }

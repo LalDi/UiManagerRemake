@@ -23,12 +23,16 @@ namespace BlitzyUI.UIExample
         {
             // Run one-time setup operations here.
             okButton.onClick.AddListener(HandleOkClicked);
+
+            Debug.Log($"[{key}] Play OnHierFixed");
         }
 
         public override void OnSetData(Data data)
         {
             messageLabel.text = data.Get<string>(dataKey);
             messageLabel.text = data.Get<string>(EExamplePopupData.msg.ToString());
+
+            Debug.Log($"[{key}] Play OnSetData");
 
             // Be sure to call PushFinished to signal the end of the push.
             //PushFinished();
@@ -38,6 +42,8 @@ namespace BlitzyUI.UIExample
         {
             // Be sure to call PopFinished to signal the end of the pop.
             //PopFinished();
+
+            Debug.Log($"[{key}] Play OnHiding");
         }
 
         private void HandleOkClicked()
@@ -46,18 +52,21 @@ namespace BlitzyUI.UIExample
         }
 
 		public override void OnShowing()
-		{
-			return;
+        {
+            Debug.Log($"[{key}] Play OnShowing");
+            return;
 		}
 
 		public override void InAnimEnd()
-		{
-			return;
+        {
+            Debug.Log($"[{key}] Play InAnimEnd");
+            return;
 		}
 
 		public override void OutAnimEnd()
-		{
-			return;
+        {
+            Debug.Log($"[{key}] Play OutAnimEnd");
+            return;
 		}
 	}
 }
