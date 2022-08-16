@@ -151,8 +151,7 @@ namespace BlitzyUI
             DebugPrintQueue(string.Format("[UIManager] Enqueued Screen: {0}, Frame: {1}", push, Time.frameCount));
             #endif
 
-            if (CanExecuteNextQueueItem())
-                ExecuteNextQueueItem();
+            OnUpdate();
         }
 
         /// <summary>
@@ -209,8 +208,7 @@ namespace BlitzyUI
             if (!found)
                 Debug.LogWarning(string.Format("[UIManager] {0} was not in the stack. All screens have been popped.", id));
 
-            if (CanExecuteNextQueueItem())
-                ExecuteNextQueueItem();
+            OnUpdate();
         }
 
         /// <summary>
@@ -237,8 +235,7 @@ namespace BlitzyUI
             DebugPrintQueue(string.Format("[UIManager] Enqueued Screen: {0}", pop));
             #endif
 
-            if (CanExecuteNextQueueItem())
-                ExecuteNextQueueItem();
+            OnUpdate();
         }
 
         public void OnUpdate ()
@@ -573,8 +570,7 @@ namespace BlitzyUI
                 _activePushCallback = null;
             }
 
-            if (CanExecuteNextQueueItem())
-                ExecuteNextQueueItem();
+            OnUpdate();
         }
 
         private void HandlePopFinished (Screen screen)
@@ -610,8 +606,7 @@ namespace BlitzyUI
                 _activePopCallback = null;
             }
 
-            if (CanExecuteNextQueueItem())
-                ExecuteNextQueueItem();
+            OnUpdate();
         }
     }
 }
