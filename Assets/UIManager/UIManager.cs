@@ -374,7 +374,7 @@ namespace BlitzyUI
 
                     if (topScreen is Window)
                     {
-                        var topWindow = (Window)topScreen;
+                        var topWindow = topScreen as Window;
                         topWindow.OnFocusLost();
                     }
                 }
@@ -447,7 +447,7 @@ namespace BlitzyUI
                         // Screen gains focus when it is on top of the screen stack and no other items in the queue.
                         if (newTopScreen is Window)
                         {
-                            var topWindow = (Window)newTopScreen;
+                            var topWindow = newTopScreen as Window;
                             topWindow.OnReFocus();
                         }
                     }
