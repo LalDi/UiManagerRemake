@@ -353,11 +353,18 @@ namespace BlitzyUI
                     // Instantiate new instance of screen.
                     //string path = System.IO.Path.Combine(resourcePrefabDirectory, queuedPush.prefabName);
                     //Screen prefab = Resources.Load<Screen>(path);
-                    Screen prefab = _dicScreenPrefab[queuedPush.key];
-
-                    screenInstance = Object.Instantiate(prefab, rootCanvas.transform);
-                    screenInstance.Setup(queuedPush.id, queuedPush.key);
-                    screenInstance.OnHierFixed();
+                    Screen prefab;// = _dicScreenPrefab[queuedPush.key];
+                    if (_dicScreenPrefab.TryGetValue(queuedPush.key, out prefab))
+                    {
+                        screenInstance = Object.Instantiate(prefab, rootCanvas.transform);
+                        screenInstance.Setup(queuedPush.id, queuedPush.key);
+                        screenInstance.OnHierFixed();
+                    }
+                    else
+					{
+                        throw new System.Exception("[UIManager] UIManager에 등록되지 않은 Screen의 key가 Push되었습니다.\n" +
+                            "key : " + queuedPush.key.ToString());
+					}
                 }
 
                 if (this.inputOrderFixEnabled) {
