@@ -397,12 +397,13 @@ namespace BlitzyUI
                 DebugPrintStack(string.Format("[UIManager] Pushing Screen: {0}, Frame: {1}", queued.id, Time.frameCount));
                 #endif
 
+                screenInstance.onPushFinished += HandlePushFinished;
                 screenInstance.OnShowing(queuedPush.data);
 
-                screenInstance.InAnimEnd();
+                //screenInstance.EndInAnim();
 
-                screenInstance.onPushFinished += HandlePushFinished;
-                screenInstance.PushFinished();
+                //screenInstance.onPushFinished += HandlePushFinished;
+                //screenInstance.PushFinished();
 
                 //if (_queue.Count == 0)
                 //{
@@ -466,11 +467,12 @@ namespace BlitzyUI
                 #endif
 
                 //screenToPop.OnPop();
-                screenToPop.OnHiding();
-                screenToPop.OutAnimEnd();
-
                 screenToPop.onPopFinished += HandlePopFinished;
-                screenToPop.PopFinished();
+                screenToPop.OnHiding();
+                //screenToPop.EndOutAnim();
+
+                //screenToPop.onPopFinished += HandlePopFinished;
+                //screenToPop.PopFinished();
             }
         }
 

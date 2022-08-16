@@ -14,72 +14,81 @@ namespace BlitzyUI.UIExample
         public Button buttonB;
         public Button buttonC;
         public Button buttonD;
+        public GameObject dimming;
+
+        private string nextHeader;
 
         public override void OnHierFixed()
         {
             // Run one-time setup operations here.
+            Debug.Log($"[{key}] Play OnHierFixed");
+
             buttonA.onClick.AddListener(HandleButtonAClicked);
             buttonB.onClick.AddListener(HandleButtonBClicked);
             buttonC.onClick.AddListener(HandleButtonCClicked);
             buttonD.onClick.AddListener(HandleButtonDClicked);
-
-            Debug.Log($"[{key}] Play OnHierFixed");
         }
 
         public override void OnShowing(Data data)
         {
+            Debug.Log($"[{key}] Play OnSetData");
+
             headerLabel.text = "Click on a button...";
 
             // Be sure to call PushFinished to signal the end of the push.
             //PushFinished();
-
-            Debug.Log($"[{key}] Play OnSetData");
+            EndInAnim();
         }
 
         public override void OnHiding()
         {
+            Debug.Log($"[{key}] Play OnHiding");
+
             // Be sure to call PopFinished to signal the end of the pop.
             //PopFinished();
-
-            Debug.Log($"[{key}] Play OnHiding");
+            EndOutAnim();
         }
 
         public override void OnReFocus()
         {
-            headerLabel.gameObject.SetActive(true);
-
             Debug.Log($"[{key}] Play OnReFocus");
+
+            headerLabel.gameObject.SetActive(true);
+            dimming.gameObject.SetActive(false);
+
+            headerLabel.text = nextHeader;
         }
 
         public override void OnFocusLost()
         {
-            headerLabel.gameObject.SetActive(false);
-
             Debug.Log($"[{key}] Play OnFocusLost");
+
+			//headerLabel.gameObject.SetActive(false);
+			dimming.gameObject.SetActive(true);
         }
 
         private void HandleButtonAClicked()
         {
             DisplayPopup("You clicked a button, good job!");
-            headerLabel.text = "Button A clicked. Click another...";
+            nextHeader = "Button A clicked. Click another...";
         }
 
         private void HandleButtonBClicked()
         {
             DisplayPopup("Look at those button mashing skills!");
-            headerLabel.text = "Button B clicked. Click another...";
+            nextHeader = "Button B clicked. Click another...";
         }
 
         private void HandleButtonCClicked()
         {
             DisplayPopup("Your a natural, do you think you could click another but with more pizzazz?");
-            headerLabel.text = "Button C clicked. Click another...";
+            nextHeader = "Button C clicked. Click another...";
         }
 
         private void HandleButtonDClicked()
         {
             DisplayPopup("If you keep clicking buttons like that, you are gonna put me out of the job!");
-            headerLabel.text = "Button D clicked. Click another...";
+            nextHeader = "Button D clicked. Click another...";
         }
 
         private void DisplayPopup(string message)
@@ -90,19 +99,23 @@ namespace BlitzyUI.UIExample
 
 			UIManager.Instance.QueuePush(GameManager.ScreenId_ExamplePopup, screenData, EScreenKey.EXAMPLEPOPUP, (screen) =>
 			{
+                headerLabel.gameObject.SetActive(false);
+
                 Debug.Log($"[{key}] Play Callback : End Push");
             });
         }
 
-		public override void InAnimEnd()
+		public override void EndInAnim()
         {
             Debug.Log($"[{key}] Play InAnimEnd");
+            ShowFinished();
             return;
 		}
 
-		public override void OutAnimEnd()
+		public override void EndOutAnim()
         {
             Debug.Log($"[{key}] Play OutAnimEnd");
+            HideFinished();
             return;
 		}
 	}

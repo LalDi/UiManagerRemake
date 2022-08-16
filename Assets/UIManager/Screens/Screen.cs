@@ -140,18 +140,27 @@ public abstract class Screen : MonoBehaviour
 	}
 
 	public abstract void OnHierFixed();
+    /// <summary>
+    /// 스크린이 화면에 나타날 때 실행되는 메소드.
+    /// 종료 시, 반드시 <see cref="ShowFinished"/>를 실행시켜야 함.
+    /// </summary>
+    /// <param name="data">스크린에 보낼 값. string으로 데이터의 내용을 구분한다.</param>
 	public abstract void OnShowing(Data data);
-	public abstract void InAnimEnd();
-	public abstract void OnHiding();
-	public abstract void OutAnimEnd();
+	public abstract void EndInAnim();
+    /// <summary>
+    /// 스크린이 화면에서 사라질 때 실행되는 메소드.
+    /// 종료 시, 반드시 <see cref="HideFinished"/>를 실행시켜야 함.
+    /// </summary>
+    public abstract void OnHiding();
+	public abstract void EndOutAnim();
 
 
-	public void PushFinished()
+	public void ShowFinished()
 	{
 		onPushFinished?.Invoke(this);
 	}
 
-	public void PopFinished()
+	public void HideFinished()
 	{
 		onPopFinished?.Invoke(this);
 	}

@@ -20,6 +20,7 @@ namespace BlitzyUI
             // Be sure to call PushFinished to signal the end of the push.
             //PushFinished();
             Debug.Log($"[{key}] Play OnSetData");
+            EndInAnim();
         }
 
         public override void OnHiding()
@@ -27,6 +28,7 @@ namespace BlitzyUI
             // Be sure to call PopFinished to signal the end of the pop.
             //PopFinished();
             Debug.Log($"[{key}] Play OnHiding");
+            EndOutAnim();
         }
 
         public override void OnReFocus()
@@ -39,15 +41,17 @@ namespace BlitzyUI
             Debug.Log($"[{key}] Play OnFocusLost");
         }
 
-		public override void InAnimEnd()
+		public override void EndInAnim()
         {
             Debug.Log($"[{key}] Play InAnimEnd");
+            ShowFinished();
             return;
 		}
 
-		public override void OutAnimEnd()
+		public override void EndOutAnim()
         {
             Debug.Log($"[{key}] Play OutAnimEnd");
+            HideFinished();
             return;
 		}
 	}
