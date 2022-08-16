@@ -31,7 +31,7 @@ namespace BlitzyUI.UIExample
             headerLabel.text = "Click on a button...";
 
             // Be sure to call PushFinished to signal the end of the push.
-            PushFinished();
+            //PushFinished();
 
             Debug.Log($"[{key}] Play OnSetData");
         }
