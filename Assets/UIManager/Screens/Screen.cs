@@ -139,9 +139,8 @@ public abstract class Screen : MonoBehaviour
 		this.key = key;
 	}
 
-	public abstract void OnSetData(Data data);
 	public abstract void OnHierFixed();
-	public abstract void OnShowing();
+	public abstract void OnShowing(Data data);
 	public abstract void InAnimEnd();
 	public abstract void OnHiding();
 	public abstract void OutAnimEnd();

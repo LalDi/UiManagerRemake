@@ -27,7 +27,7 @@ namespace BlitzyUI.UIExample
             Debug.Log($"[{key}] Play OnHierFixed");
         }
 
-        public override void OnSetData(Data data)
+        public override void OnShowing(Data data)
         {
             messageLabel.text = data.Get<string>(dataKey);
             messageLabel.text = data.Get<string>(EExamplePopupData.msg.ToString());
@@ -53,12 +53,6 @@ namespace BlitzyUI.UIExample
                 Debug.Log($"[{key}] Play Callback : End Pop");
             });
         }
-
-		public override void OnShowing()
-        {
-            Debug.Log($"[{key}] Play OnShowing");
-            return;
-		}
 
 		public override void InAnimEnd()
         {

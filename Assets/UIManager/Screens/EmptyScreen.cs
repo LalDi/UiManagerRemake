@@ -15,7 +15,7 @@ namespace BlitzyUI
             Debug.Log($"[{key}] Play OnHierFixed");
         }
 
-        public override void OnSetData(Data data)
+        public override void OnShowing(Data data)
         {
             // Be sure to call PushFinished to signal the end of the push.
             //PushFinished();
@@ -38,12 +38,6 @@ namespace BlitzyUI
         {
             Debug.Log($"[{key}] Play OnFocusLost");
         }
-
-		public override void OnShowing()
-        {
-            Debug.Log($"[{key}] Play OnShowing");
-            return;
-		}
 
 		public override void InAnimEnd()
         {

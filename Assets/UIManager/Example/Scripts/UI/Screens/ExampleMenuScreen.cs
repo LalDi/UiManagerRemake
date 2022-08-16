@@ -26,7 +26,7 @@ namespace BlitzyUI.UIExample
             Debug.Log($"[{key}] Play OnHierFixed");
         }
 
-        public override void OnSetData(Data data)
+        public override void OnShowing(Data data)
         {
             headerLabel.text = "Click on a button...";
 
@@ -93,12 +93,6 @@ namespace BlitzyUI.UIExample
                 Debug.Log($"[{key}] Play Callback : End Push");
             });
         }
-
-		public override void OnShowing()
-        {
-            Debug.Log($"[{key}] Play OnShowing");
-            return;
-		}
 
 		public override void InAnimEnd()
         {

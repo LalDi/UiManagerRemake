@@ -397,9 +397,8 @@ namespace BlitzyUI
                 DebugPrintStack(string.Format("[UIManager] Pushing Screen: {0}, Frame: {1}", queued.id, Time.frameCount));
                 #endif
 
-                screenInstance.OnSetData(queuedPush.data);
+                screenInstance.OnShowing(queuedPush.data);
 
-                screenInstance.OnShowing();
                 screenInstance.InAnimEnd();
 
                 screenInstance.onPushFinished += HandlePushFinished;
