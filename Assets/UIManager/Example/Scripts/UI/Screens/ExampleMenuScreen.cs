@@ -88,7 +88,10 @@ namespace BlitzyUI.UIExample
             screenData.Add(ExamplePopupScreen.dataKey, message);
             screenData.Add(EExamplePopupData.msg.ToString(), message);
 
-            UIManager.Instance.QueuePush(GameManager.ScreenId_ExamplePopup, screenData, EScreenKey.EXAMPLEPOPUP, null);
+			UIManager.Instance.QueuePush(GameManager.ScreenId_ExamplePopup, screenData, EScreenKey.EXAMPLEPOPUP, (screen) =>
+			{
+                Debug.Log($"[{key}] Play Callback : End Push");
+            });
         }
 
 		public override void OnShowing()

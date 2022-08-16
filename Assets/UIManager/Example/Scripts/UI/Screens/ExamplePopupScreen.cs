@@ -48,7 +48,10 @@ namespace BlitzyUI.UIExample
 
         private void HandleOkClicked()
         {
-            UIManager.Instance.QueuePop(null);
+            UIManager.Instance.QueuePop((id) =>
+            {
+                Debug.Log($"[{key}] Play Callback : End Pop");
+            });
         }
 
 		public override void OnShowing()
