@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace BlitzyUI.UIExample
@@ -10,6 +11,9 @@ namespace BlitzyUI.UIExample
         public static readonly Screen.Id ScreenId_Empty = new Screen.Id("Empty");
         public static readonly Screen.Id ScreenId_ExampleMenu = new Screen.Id("ExampleMenu");
         public static readonly Screen.Id ScreenId_ExamplePopup = new Screen.Id("ExamplePopup");
+
+        public List<ScreenKeyData> listScreenKey;
+        public Canvas rootCanvas;
 
         private void Awake() {
             if (Instance == null) {

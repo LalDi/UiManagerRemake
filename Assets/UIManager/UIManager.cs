@@ -7,10 +7,11 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
+using BlitzyUI.UIExample;
 
 namespace BlitzyUI
 {
-    public class UIManager : MonoBehaviour
+    public class UIManager/* : MonoBehaviour*/
     {
         public const string Version = "1.0.0";
 
@@ -48,10 +49,7 @@ namespace BlitzyUI
 
         public static UIManager Instance { get; private set; }
 
-        public List<ScreenKeyData> listScreenKey;
         private Dictionary<EScreenKey, Screen> _dicScreenPrefab;
-        public Canvas rootCanvas;
-        public Camera uiCamera;
 
         /// <summary>
         /// [Ryan] A fix for input order not obeying the render order of the screens.
@@ -78,16 +76,16 @@ namespace BlitzyUI
             Pop
         }
 
-        private void Awake() {
+        public void Init() {
             if (Instance == null) {
                 Instance = this;
             }
 
             Debug.Log("[UIManager] Version: " + Version);
 
-            _rootCanvasScalar = rootCanvas.GetComponent<CanvasScaler>();
+            _rootCanvasScalar = GameManager.Instance.rootCanvas.GetComponent<CanvasScaler>();
             if (_rootCanvasScalar == null) {
-                throw new System.Exception(string.Format("{0} must have a CanvasScalar component attached to it for UIManager.", rootCanvas.name));
+                throw new System.Exception(string.Format("{0} must have a CanvasScalar component attached to it for UIManager.", GameManager.Instance.rootCanvas.name));
             }
 
             _dicScreenPrefab = new Dictionary<EScreenKey, Screen>();
@@ -96,22 +94,23 @@ namespace BlitzyUI
             _stack = new Stack<Screen>();
             _state = State.Ready;
 
-			foreach (var data in listScreenKey)
+			foreach (var data in GameManager.Instance.listScreenKey)
 			{
 				foreach (var item in data.screenList)
 				{
-                    _dicScreenPrefab.Add(item.key, item.prefab);
+                    if (_dicScreenPrefab.ContainsKey(item.key) == false)
+                        _dicScreenPrefab.Add(item.key, item.prefab);
 				}
 			}
 
             // Remove any objects that may be lingering underneath the root.
-            foreach (Transform child in rootCanvas.transform)
+            foreach (Transform child in GameManager.Instance.rootCanvas.transform)
             {
                 Object.Destroy(child.gameObject);
             }
         }
 
-        private void OnDestroy() {
+        public void Release() {
             if (Instance == this) {
                 Instance = null;
             }
@@ -279,6 +278,7 @@ namespace BlitzyUI
 
         public void SetVisibility (bool visible)
         {
+            var rootCanvas = GameManager.Instance.rootCanvas;
             var canvasGroup = rootCanvas.GetComponent<CanvasGroup>();
             if (canvasGroup == null) {
                 canvasGroup = rootCanvas.gameObject.AddComponent<CanvasGroup>();
@@ -290,6 +290,7 @@ namespace BlitzyUI
         }
 
         public bool IsVisible() {
+            var rootCanvas = GameManager.Instance.rootCanvas;
             var canvasGroup = rootCanvas.GetComponent<CanvasGroup>();
 
             if (canvasGroup == null) {
@@ -353,7 +354,7 @@ namespace BlitzyUI
                     Screen prefab;// = _dicScreenPrefab[queuedPush.key];
                     if (_dicScreenPrefab.TryGetValue(queuedPush.key, out prefab))
                     {
-                        screenInstance = Object.Instantiate(prefab, rootCanvas.transform);
+                        screenInstance = Object.Instantiate(prefab, GameManager.Instance.rootCanvas.transform);
                         screenInstance.Setup(queuedPush.id, queuedPush.key);
                         screenInstance.OnHierFixed();
                     }
@@ -477,23 +478,36 @@ namespace BlitzyUI
         private void UpdateSortOrderOverrides() {
             int managedOrder = 0;
             
-            int childCount = this.rootCanvas.transform.childCount;
-            for (int i = 0; i < childCount; i++) {
-                var screen = this.rootCanvas.transform.GetChild(i).GetComponent<Screen>();
-                if (screen != null) {
-                    var canvas = screen.GetComponent<Canvas>();
-                    if (canvas != null) {
-                        canvas.overrideSorting = true;
+            //int childCount = GameManager.Instance.rootCanvas.transform.childCount;
+            //for (int i = 0; i < childCount; i++) {
+            //    var screen = GameManager.Instance.rootCanvas.transform.GetChild(i).GetComponent<Screen>();
+            //    if (screen != null) {
+            //        var canvas = screen.GetComponent<Canvas>();
+            //        if (canvas != null) {
+            //            canvas.overrideSorting = true;
+            //
+            //            if (screen.overrideManagedSorting) {
+            //                canvas.sortingOrder = screen.overrideSortValue;
+            //            } else {
+            //                canvas.sortingOrder = managedOrder;
+            //                managedOrder++;
+            //            }
+            //        }
+            //    }
+            //}
 
-                        if (screen.overrideManagedSorting) {
-                            canvas.sortingOrder = screen.overrideSortValue;
-                        } else {
-                            canvas.sortingOrder = managedOrder;
-                            managedOrder++;
-                        }
-                    }
-                }
-            }
+			foreach (var screen in _stack)
+			{
+                var canvas = screen.GetComponent<Canvas>();
+                if (canvas == null) continue;
+
+                canvas.overrideSorting = true;
+
+                if (screen.overrideManagedSorting)
+                    canvas.sortingOrder = screen.overrideSortValue;
+                else
+                    canvas.sortingOrder = managedOrder++;
+			}
         }
 
         /// <summary>
