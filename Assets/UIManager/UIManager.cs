@@ -276,34 +276,6 @@ namespace BlitzyUI
             return (T)screen;
         }
 
-        public void SetVisibility (bool visible)
-        {
-            var rootCanvas = GameManager.Instance.rootCanvas;
-            var canvasGroup = rootCanvas.GetComponent<CanvasGroup>();
-            if (canvasGroup == null) {
-                canvasGroup = rootCanvas.gameObject.AddComponent<CanvasGroup>();
-            }
-
-            canvasGroup.alpha = visible ? 1.0f : 0.0f;
-            canvasGroup.interactable = visible;
-            canvasGroup.blocksRaycasts = visible;
-        }
-
-        public bool IsVisible() {
-            var rootCanvas = GameManager.Instance.rootCanvas;
-            var canvasGroup = rootCanvas.GetComponent<CanvasGroup>();
-
-            if (canvasGroup == null) {
-                return true;
-            }
-
-            bool isVisible = canvasGroup.alpha > 0.0f && 
-                            canvasGroup.interactable == true &&
-                            canvasGroup.blocksRaycasts == true;
-
-            return isVisible;
-        }
-
         private bool CanExecuteNextQueueItem ()
         {
             if (_state == State.Ready)
