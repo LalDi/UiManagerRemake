@@ -464,6 +464,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3bcfced45234048ada67349e3c46c344, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  listScreenKey:
+  - {fileID: 11400000, guid: 317732a3abc8ce246a4f89e30be906ff, type: 2}
+  rootCanvas: {fileID: 1963757146}
 --- !u!4 &2104960977
 Transform:
   m_ObjectHideFlags: 0

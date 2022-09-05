@@ -97,7 +97,7 @@ namespace BlitzyUI.UIExample
             screenData.Add(ExamplePopupScreen.dataKey, message);
             screenData.Add(EExamplePopupData.msg.ToString(), message);
 
-			UIManager.Instance.QueuePush(GameManager.ScreenId_ExamplePopup, screenData, EScreenKey.EXAMPLEPOPUP, (screen) =>
+			GameManager.uiManger.QueuePush(GameManager.ScreenId_ExamplePopup, screenData, EScreenKey.EXAMPLEPOPUP, (screen) =>
 			{
                 headerLabel.gameObject.SetActive(false);
 

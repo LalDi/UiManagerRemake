@@ -1,8 +1,3 @@
-//#define PRINT_STACK
-//#define PRINT_QUEUE
-//#define PRINT_CACHE
-//#define PRINT_FOCUS
-
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
@@ -11,10 +6,8 @@ using BlitzyUI.UIExample;
 
 namespace BlitzyUI
 {
-    public class UIManager/* : MonoBehaviour*/
+    public class UIManager
     {
-        public const string Version = "1.0.0";
-
         private abstract class QueuedScreen
         {
             public Screen.Id id;
@@ -47,8 +40,6 @@ namespace BlitzyUI
         public delegate void PushedDelegate (Screen screen);
         public delegate void PoppedDelegate (Screen.Id id);
 
-        public static UIManager Instance { get; private set; }
-
         private Dictionary<EScreenKey, Screen> _dicScreenPrefab;
 
         /// <summary>
@@ -76,13 +67,8 @@ namespace BlitzyUI
             Pop
         }
 
-        public void Init() {
-            if (Instance == null) {
-                Instance = this;
-            }
-
-            Debug.Log("[UIManager] Version: " + Version);
-
+        public void Init() 
+        {
             _rootCanvasScalar = GameManager.Instance.rootCanvas.GetComponent<CanvasScaler>();
             if (_rootCanvasScalar == null) {
                 throw new System.Exception(string.Format("{0} must have a CanvasScalar component attached to it for UIManager.", GameManager.Instance.rootCanvas.name));
@@ -110,22 +96,12 @@ namespace BlitzyUI
             }
         }
 
-        public void Release() {
-            if (Instance == this) {
-                Instance = null;
-            }
-        }
-
         /// <summary>
         /// Queue the screen to be pushed onto the screen stack. 
         /// Callback will be invoked when the screen is pushed to the stack.
         /// </summary>
         public void QueuePush (Screen.Id id, Screen.Data data, EScreenKey key, PushedDelegate callback = null)
         {
-            #if PRINT_QUEUE
-            DebugPrintQueue(string.Format("[UIManager] QueuePush id: {0}, prefabKey: {1}", id, key.ToString()));
-            #endif
-
             if (GetScreen(id) != null)
             {
                 Debug.LogWarning(string.Format("Screen {0} already exists in the stack. Ignoring push request.", id));
@@ -146,10 +122,6 @@ namespace BlitzyUI
 
             _queue.Enqueue(push);
 
-            #if PRINT_QUEUE
-            DebugPrintQueue(string.Format("[UIManager] Enqueued Screen: {0}, Frame: {1}", push, Time.frameCount));
-            #endif
-
             OnUpdate();
         }
 
@@ -159,10 +131,6 @@ namespace BlitzyUI
         /// </summary>
         public void QueuePopTo (Screen.Id id, bool include, PoppedDelegate callback = null)
         {
-            #if PRINT_QUEUE
-            DebugPrintQueue(string.Format("[UIManager] QueuePopTo id: {0}, include: {1}", id, include));
-            #endif
-
             bool found = false;
 
             //for (int i = 0; i < _stack.Count; i++)
@@ -176,10 +144,6 @@ namespace BlitzyUI
                     queuedPop.id = screen.id;
 
                     _queue.Enqueue(queuedPop);
-
-                    #if PRINT_QUEUE
-                    DebugPrintQueue(string.Format("[UIManager] Enqueued Screen: {0}", queuedPop));
-                    #endif
                 }
                 else
                 {
@@ -190,10 +154,6 @@ namespace BlitzyUI
                         queuedPop.callback = callback;
 
                         _queue.Enqueue(queuedPop);
-
-                        #if PRINT_QUEUE
-                        DebugPrintQueue(string.Format("[UIManager] Enqueued Screen: {0}", queuedPop));
-                        #endif
                     }
 
                     if (callback != null)
@@ -216,10 +176,6 @@ namespace BlitzyUI
         /// </summary>
         public void QueuePop (PoppedDelegate callback = null)
         {
-            #if PRINT_QUEUE
-            DebugPrintQueue(string.Format("[UIManager] QueuePop"));
-            #endif
-
             Screen topScreen = GetTopScreen();
             if (topScreen == null)
                 return;
@@ -229,11 +185,6 @@ namespace BlitzyUI
             pop.callback = callback;
 
             _queue.Enqueue(pop);
-
-            #if PRINT_QUEUE
-            DebugPrintQueue(string.Format("[UIManager] Enqueued Screen: {0}", pop));
-            #endif
-
             OnUpdate();
         }
 
@@ -294,10 +245,6 @@ namespace BlitzyUI
             // Get next queued item.
             QueuedScreen queued = _queue.Dequeue();
 
-            #if PRINT_QUEUE
-            DebugPrintQueue(string.Format("[UIManager] Dequeued Screen: {0}, Frame: {1}", queued, Time.frameCount));
-            #endif
-
             if (queued is QueuedScreenPush)
             {
                 // Push screen.
@@ -308,10 +255,6 @@ namespace BlitzyUI
                 {
                     // Use cached instance of screen.
                     _cache.Remove(queuedPush.key);
-
-                    #if PRINT_CACHE
-                    DebugPrintCache(string.Format("[UIManager] Screen retrieved from Cache: {0}", queuedPush.key.ToString()));
-                    #endif
 
                     // Move cached to the front of the transfrom heirarchy so that it is sorted properly.
                     screenInstance.transform.SetAsLastSibling();
@@ -345,10 +288,6 @@ namespace BlitzyUI
                 var topScreen = GetTopScreen();
                 if (topScreen != null)
                 {
-                    #if PRINT_FOCUS
-                    Debug.Log(string.Format("[UIManager] Lost Focus: {0}", topScreen.id));
-                    #endif
-
                     if (topScreen is Window)
                     {
                         var topWindow = topScreen as Window;
@@ -362,10 +301,6 @@ namespace BlitzyUI
                 //_stack.Insert(0, screenInstance);
 
                 _activePushCallback = queuedPush.callback;
-
-                #if PRINT_STACK
-                DebugPrintStack(string.Format("[UIManager] Pushing Screen: {0}, Frame: {1}", queued.id, Time.frameCount));
-                #endif
 
                 screenInstance.onPushFinished += HandlePushFinished;
                 screenInstance.OnShowing(queuedPush.data);
@@ -398,10 +333,6 @@ namespace BlitzyUI
 
                 Screen screenToPop = _stack.Pop(); //GetTopScreen();
 
-                #if PRINT_FOCUS
-                Debug.Log(string.Format("[UIManager] Lost Focus: {0}", screenToPop.id));
-                #endif
-
                 //screenToPop.OnFocusLost();
                 //if (screenToPop is Window)
                 //{
@@ -418,10 +349,6 @@ namespace BlitzyUI
                 {
                     if (_queue.Count == 0)
                     {
-                        #if PRINT_FOCUS
-                        Debug.Log(string.Format("[UIManager] Gained Focus: {0}", newTopScreen.id));
-                        #endif
-
                         // Screen gains focus when it is on top of the screen stack and no other items in the queue.
                         if (newTopScreen is Window)
                         {
@@ -432,10 +359,6 @@ namespace BlitzyUI
                 }
 
                 _activePopCallback = queuedPop.callback;
-
-                #if PRINT_STACK
-                DebugPrintStack(string.Format("[UIManager] Popping Screen: {0}, Frame: {1}", queued.id, Time.frameCount));
-                #endif
 
                 //screenToPop.OnPop();
                 screenToPop.onPopFinished += HandlePopFinished;
@@ -480,69 +403,6 @@ namespace BlitzyUI
                 else
                     canvas.sortingOrder = managedOrder++;
 			}
-        }
-
-        /// <summary>
-        /// Check to see if the screen will exist after the queue has been fully executed.
-        /// </summary>
-        //private bool ScreenWillExist (BlitzyUI.Screen.Id id)
-        //{
-        //    return false;
-
-        //    // TODO: Infer if the screen will exists after the queue is fully executed.
-        //}
-
-        private void DebugPrintStack (string optionalEventMsg)
-        {
-            var sb = new System.Text.StringBuilder();
-
-            if (!string.IsNullOrEmpty(optionalEventMsg))
-                sb.AppendLine(optionalEventMsg);
-
-            sb.AppendLine("[UIManager Screen Stack]");
-
-            //for (int i = 0; i < _stack.Count; i++)
-            foreach (var screen in _stack)
-            {
-                //sb.AppendLine(string.Format("{0}", _stack[i].id));
-                sb.AppendLine(string.Format("{0}", screen.id));
-            }
-
-            Debug.Log(sb.ToString());
-        }
-
-        private void DebugPrintQueue (string optionalEventMsg)
-        {
-            var sb = new System.Text.StringBuilder();
-
-            if (!string.IsNullOrEmpty(optionalEventMsg))
-                sb.AppendLine(optionalEventMsg);
-
-            sb.AppendLine("[UIManager Screen Queue]");
-
-            foreach (QueuedScreen queued in _queue)
-            {
-                sb.AppendLine(queued.ToString());
-            }
-
-            Debug.Log(sb.ToString());
-        }
-
-        private void DebugPrintCache (string optionalEventMsg)
-        {
-            var sb = new System.Text.StringBuilder();
-
-            if (!string.IsNullOrEmpty(optionalEventMsg))
-                sb.AppendLine(optionalEventMsg);
-
-            sb.AppendLine("[UIManager Screen Cache]");
-
-            foreach (KeyValuePair<EScreenKey, Screen> cached in _cache)
-            {
-                sb.AppendLine(cached.Key.ToString());
-            }
-
-            Debug.Log(sb.ToString());
         }
 
         private void HandlePushFinished (Screen screen)

@@ -60,7 +60,7 @@ namespace BlitzyUI.UIExample
         {
             if (isCompleteAnim == false) return;
 
-            UIManager.Instance.QueuePop((id) =>
+            GameManager.uiManger.QueuePop((id) =>
             {
                 Debug.Log($"[{key}] Play Callback : End Pop");
             });

@@ -6,6 +6,7 @@ namespace BlitzyUI.UIExample
     public class GameManager : MonoBehaviour
     {
         public static GameManager Instance { get; private set; }
+        public static UIManager uiManger { get; private set; }
 
         // Screen Ids
         public static readonly Screen.Id ScreenId_Empty = new Screen.Id("Empty");
@@ -15,10 +16,17 @@ namespace BlitzyUI.UIExample
         public List<ScreenKeyData> listScreenKey;
         public Canvas rootCanvas;
 
-        private void Awake() {
+        private void Awake() 
+        {
+            DontDestroyOnLoad(this);
+
             if (Instance == null) {
                 Instance = this;
             }
+            if (uiManger == null)
+			{
+                uiManger = new UIManager();
+			}
         }
 
         private void OnDestroy() {
@@ -29,7 +37,7 @@ namespace BlitzyUI.UIExample
 
         private void Start() {
             // Push the example menu screen immediately.
-            UIManager.Instance.QueuePush(ScreenId_ExampleMenu, null, EScreenKey.EXAMPLEMENU, null);
+            uiManger.QueuePush(ScreenId_ExampleMenu, null, EScreenKey.EXAMPLEMENU, null);
         }
     }
 }
