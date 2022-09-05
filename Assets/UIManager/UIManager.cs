@@ -433,10 +433,6 @@ namespace BlitzyUI
                 if (!_cache.ContainsKey(screen.key))
                 {
                     _cache.Add(screen.key, screen);
-
-                    #if PRINT_CACHE
-                    DebugPrintCache(string.Format("[UIManager] Screen added to Cache: {0}", screen.PrefabName));
-                    #endif
                 }
             }
             else
