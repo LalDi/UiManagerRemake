@@ -373,36 +373,36 @@ namespace BlitzyUI
         private void UpdateSortOrderOverrides() {
             int managedOrder = 0;
             
-            //int childCount = GameManager.Instance.rootCanvas.transform.childCount;
-            //for (int i = 0; i < childCount; i++) {
-            //    var screen = GameManager.Instance.rootCanvas.transform.GetChild(i).GetComponent<Screen>();
-            //    if (screen != null) {
-            //        var canvas = screen.GetComponent<Canvas>();
-            //        if (canvas != null) {
-            //            canvas.overrideSorting = true;
+            int childCount = GameManager.Instance.rootCanvas.transform.childCount;
+            for (int i = 0; i < childCount; i++) {
+                var screen = GameManager.Instance.rootCanvas.transform.GetChild(i).GetComponent<Screen>();
+                if (screen != null) {
+                    var canvas = screen.GetComponent<Canvas>();
+                    if (canvas != null) {
+                        canvas.overrideSorting = true;
+            
+                        if (screen.overrideManagedSorting) {
+                            canvas.sortingOrder = screen.overrideSortValue;
+                        } else {
+                            canvas.sortingOrder = managedOrder;
+                            managedOrder++;
+                        }
+                    }
+                }
+            }
+
+			//foreach (var screen in _stack)
+			//{
+            //    var canvas = screen.GetComponent<Canvas>();
+            //    if (canvas == null) continue;
             //
-            //            if (screen.overrideManagedSorting) {
-            //                canvas.sortingOrder = screen.overrideSortValue;
-            //            } else {
-            //                canvas.sortingOrder = managedOrder;
-            //                managedOrder++;
-            //            }
-            //        }
-            //    }
-            //}
-
-			foreach (var screen in _stack)
-			{
-                var canvas = screen.GetComponent<Canvas>();
-                if (canvas == null) continue;
-
-                canvas.overrideSorting = true;
-
-                if (screen.overrideManagedSorting)
-                    canvas.sortingOrder = screen.overrideSortValue;
-                else
-                    canvas.sortingOrder = managedOrder++;
-			}
+            //    canvas.overrideSorting = true;
+            //
+            //    if (screen.overrideManagedSorting)
+            //        canvas.sortingOrder = screen.overrideSortValue;
+            //    else
+            //        canvas.sortingOrder = managedOrder++;
+			//}
         }
 
         private void HandlePushFinished (Screen screen)

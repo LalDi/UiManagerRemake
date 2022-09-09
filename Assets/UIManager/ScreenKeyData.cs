@@ -8,6 +8,7 @@ public enum EScreenKey
 	EMPTY,
 	EXAMPLEMENU,
 	EXAMPLEPOPUP,
+    EXAMPLEMVP,
 }
 
 class ScreenKeyComparer : IEqualityComparer<EScreenKey>
