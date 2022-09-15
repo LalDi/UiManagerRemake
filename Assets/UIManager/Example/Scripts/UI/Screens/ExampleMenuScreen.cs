@@ -89,7 +89,6 @@ namespace BlitzyUI.UIExample
         {
             var screenData = new Data();
 
-            GameManager.uiManger.QueuePopTo(GameManager.ScreenId_ExampleMenu, true);
             GameManager.uiManger.QueuePush(GameManager.ScreenId_ExampleMvp, screenData, EScreenKey.EXAMPLEMVP);
 
             //DisplayPopup("If you keep clicking buttons like that, you are gonna put me out of the job!");
