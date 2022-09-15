@@ -674,6 +674,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6785eb1189ddb422bbd8398b14630ee0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  canvas: {fileID: 223401169358726424}
   keepCached: 0
   overrideManagedSorting: 0
   overrideSortValue: 0

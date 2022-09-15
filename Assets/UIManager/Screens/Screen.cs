@@ -124,6 +124,7 @@ public abstract class Screen : MonoBehaviour
     public Id id { get; private set; }
     public EScreenKey key { get; private set; }
 
+	public Canvas canvas;
     public bool keepCached = false;
     public bool overrideManagedSorting;
     public int overrideSortValue;
@@ -163,5 +164,21 @@ public abstract class Screen : MonoBehaviour
 	public void HideFinished()
 	{
 		onPopFinished?.Invoke(this);
+	}
+
+	public void UpdateSortOrderOverrides(int managedOrder)
+	{
+		if (canvas == null) canvas = GetComponent<Canvas>();
+
+		canvas.overrideSorting = true;
+
+		if (overrideManagedSorting)
+		{
+			canvas.sortingOrder = overrideSortValue;
+		}
+		else
+		{
+			canvas.sortingOrder = managedOrder;
+		}
 	}
 }
