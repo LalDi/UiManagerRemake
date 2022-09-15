@@ -32,7 +32,23 @@ public class ColorPresenter : PresenterBase<ColorModel>
 
             return newColor;  
         }
-    }
+
+		public void SetDefaultColor(Color defaultColor)
+		{
+			float colorValue = 0f;
+			switch (kind)
+			{
+				case EColorParamKind.R: colorValue = defaultColor.r; break;
+				case EColorParamKind.G: colorValue = defaultColor.g; break;
+				case EColorParamKind.B: colorValue = defaultColor.b; break;
+				case EColorParamKind.A: colorValue = defaultColor.a; break;
+			}
+			int colorIntValue = Mathf.RoundToInt(colorValue * 255f);
+
+			parameterValue.text = colorIntValue.ToString();
+			parameterSlider.value = colorIntValue;
+		}
+	}
 
     [SerializeField] private Image imageView;
 
@@ -40,11 +56,11 @@ public class ColorPresenter : PresenterBase<ColorModel>
 
     private void Awake()
     {
-        model = new ColorModel();
-        model.color = Color.white;
+		model.Init();
         SetColorSample(model.color);
         foreach (var item in colorViews)
         {
+			item.SetDefaultColor(model.color);
             item.parameterSlider.onValueChanged.AddListener((value) => SetColor(item.GetNewColor(value, model.color)));
         }
         model.onColorChange += SetColorSample;
@@ -54,6 +70,7 @@ public class ColorPresenter : PresenterBase<ColorModel>
     {
         model.color = newColor;
         model.onColorChange?.Invoke(newColor);
+		model.SaveColor();
     }
 
     public void SetColorSample(Color value)

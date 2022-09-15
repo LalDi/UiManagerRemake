@@ -351,6 +351,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0b79ccb27ead5d40b571021340c40cf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  model:
+    _color: {r: 0.65882355, g: 0.25490198, b: 0.4392157, a: 1}
   imageView: {fileID: 3211173258301096354}
   colorViews:
   - parameterSlider: {fileID: 993969230073391209}
