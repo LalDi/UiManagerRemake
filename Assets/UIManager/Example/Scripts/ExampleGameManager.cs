@@ -3,9 +3,9 @@ using UnityEngine;
 
 namespace BlitzyUI.UIExample
 {
-    public class GameManager : MonoBehaviour
+    public class ExampleGameManager : MonoBehaviour
     {
-        public static GameManager Instance { get; private set; }
+        public static ExampleGameManager Instance { get; private set; }
         public static UIManager uiManger { get; private set; }
 
         // Screen Ids
@@ -27,7 +27,7 @@ namespace BlitzyUI.UIExample
             if (uiManger == null)
 			{
                 uiManger = new UIManager();
-                uiManger.Init();
+                uiManger.Init(rootCanvas, listScreenKey);
 			}
         }
 

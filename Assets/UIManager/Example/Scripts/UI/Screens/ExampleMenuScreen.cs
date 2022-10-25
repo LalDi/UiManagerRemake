@@ -89,7 +89,7 @@ namespace BlitzyUI.UIExample
         {
             var screenData = new Data();
 
-            GameManager.uiManger.QueuePush(GameManager.ScreenId_ExampleMvp, screenData, EScreenKey.EXAMPLEMVP);
+            ExampleGameManager.uiManger.QueuePush(ExampleGameManager.ScreenId_ExampleMvp, screenData, EScreenKey.EXAMPLEMVP);
 
             //DisplayPopup("If you keep clicking buttons like that, you are gonna put me out of the job!");
             //nextHeader = "Button D clicked. Click another...";
@@ -101,7 +101,7 @@ namespace BlitzyUI.UIExample
             screenData.Add(ExamplePopupScreen.dataKey, message);
             screenData.Add(EExamplePopupData.msg.ToString(), message);
 
-			GameManager.uiManger.QueuePush(GameManager.ScreenId_ExamplePopup, screenData, EScreenKey.EXAMPLEPOPUP, (screen) =>
+			ExampleGameManager.uiManger.QueuePush(ExampleGameManager.ScreenId_ExamplePopup, screenData, EScreenKey.EXAMPLEPOPUP, (screen) =>
 			{
                 headerLabel.gameObject.SetActive(false);
 

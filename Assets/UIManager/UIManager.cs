@@ -48,6 +48,7 @@ namespace BlitzyUI
 		/// </summary>
 		public bool inputOrderFixEnabled = true;
 
+		private Canvas _rootCanvas;
 		private CanvasScaler _rootCanvasScalar;
 		private Dictionary<EScreenKey, Screen> _cache;
 		private Queue<QueuedScreen> _queue;
@@ -67,12 +68,15 @@ namespace BlitzyUI
 			Pop
 		}
 
-		public void Init()
+		public void Init(Canvas rootCanvas, List<ScreenKeyData> listScreenKey)
 		{
-			_rootCanvasScalar = GameManager.Instance.rootCanvas.GetComponent<CanvasScaler>();
+			if (rootCanvas == null) throw new System.Exception("[UIManager] rootCanvas is null");
+			if (listScreenKey == null || listScreenKey.Count == 0) throw new System.Exception("[UIManager] ScreenKey's List is Null or Empty");
+			_rootCanvas = rootCanvas;
+			_rootCanvasScalar = _rootCanvas.GetComponent<CanvasScaler>();
 			if (_rootCanvasScalar == null)
 			{
-				throw new System.Exception(string.Format("{0} must have a CanvasScalar component attached to it for UIManager.", GameManager.Instance.rootCanvas.name));
+				throw new System.Exception(string.Format("{0} must have a CanvasScalar component attached to it for UIManager.", _rootCanvas.name));
 			}
 
 			_dicScreenPrefab = new Dictionary<EScreenKey, Screen>();
@@ -81,7 +85,7 @@ namespace BlitzyUI
 			_stack = new Stack<Screen>();
 			_state = State.Ready;
 
-			foreach (var data in GameManager.Instance.listScreenKey)
+			foreach (var data in listScreenKey)
 			{
 				foreach (var item in data.screenList)
 				{
@@ -91,7 +95,7 @@ namespace BlitzyUI
 			}
 
 			// Remove any objects that may be lingering underneath the root.
-			foreach (Transform child in GameManager.Instance.rootCanvas.transform)
+			foreach (Transform child in _rootCanvas.transform)
 			{
 				Object.Destroy(child.gameObject);
 			}
@@ -270,7 +274,7 @@ namespace BlitzyUI
 					Screen prefab;// = _dicScreenPrefab[queuedPush.key];
 					if (_dicScreenPrefab.TryGetValue(queuedPush.key, out prefab))
 					{
-						screenInstance = Object.Instantiate(prefab, GameManager.Instance.rootCanvas.transform);
+						screenInstance = Object.Instantiate(prefab, _rootCanvas.transform);
 						screenInstance.Setup(queuedPush.id, queuedPush.key);
 						screenInstance.OnHierFixed();
 					}
